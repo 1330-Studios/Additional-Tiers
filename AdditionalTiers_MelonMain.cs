@@ -31,7 +31,7 @@ public sealed class AdditionalTiers_MelonMain : MelonMod {
 
         Console.OutputEncoding = Encoding.UTF8;
 
-        RuntimeInfo.Logger.Msg(System.Drawing.Color.OrangeRed, $"Additional Tier Addon Loaded (v{RuntimeInfo.ModVersion}){Environment.NewLine}{sb}");
+        RuntimeInfo.Logger.Msg(System.Drawing.Color.OrangeRed, $"Additional Tier Addon Loaded ({(RuntimeInfo.ISDEBUG?"DEBUG":"")} v{RuntimeInfo.ModVersion}){Environment.NewLine}{sb}");
 
         Console.OutputEncoding = o_OutputEncoding;
     }
@@ -40,7 +40,7 @@ public sealed class AdditionalTiers_MelonMain : MelonMod {
         var guiCol = GUI.color;
         GUI.color = new Color32(255, 255, 255, 50);
         var guiStyle = new GUIStyle { normal = { textColor = Color.white } };
-        GUI.Label(new Rect(10, Screen.height - 20, 100, 90), $"Additional Tiers Addon v{RuntimeInfo.ModVersion}", guiStyle);
+        GUI.Label(new Rect(10, Screen.height - 20, 100, 90), $"Additional Tiers Addon v{RuntimeInfo.ModVersion} {(RuntimeInfo.ISDEBUG ? "DEBUG" : "")}", guiStyle);
         GUI.color = guiCol;
     }
 }

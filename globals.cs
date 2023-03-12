@@ -231,15 +231,9 @@ global using MelonLoader;
 global using MelonLoader.Assertions;
 global using MelonLoader.InternalUtils;
 global using MelonLoader.Lemons.Cryptography;
-global using MelonLoader.MelonStartScreen;
-global using MelonLoader.MelonStartScreen.NativeUtils;
-global using MelonLoader.MelonStartScreen.UI;
-global using MelonLoader.MelonStartScreen.UI.Objects;
-global using MelonLoader.MelonStartScreen.UI.Themes;
 global using MelonLoader.Modules;
 global using MelonLoader.MonoInternals;
 global using MelonLoader.MonoInternals.ResolveInternals;
-global using MelonLoader.NativeHost;
 global using MelonLoader.NativeUtils;
 global using MelonLoader.NativeUtils.PEParser;
 global using MelonLoader.Preferences;
@@ -248,19 +242,12 @@ global using MelonLoader.TinyJSON;
 global using MelonLoader.Utils;
 
 global using Microsoft.CodeAnalysis;
-global using Microsoft.Extensions.Internal;
-global using Microsoft.Extensions.Logging;
-global using Microsoft.Extensions.Logging.Abstractions;
 global using Microsoft.Win32;
 global using Microsoft.Win32.SafeHandles;
 
 global using Mono;
 global using Mono.Cecil;
 global using Mono.Cecil.Cil;
-global using Mono.Cecil.Metadata;
-global using Mono.Cecil.PE;
-global using Mono.Collections.Generic;
-global using Mono.Security.Cryptography;
 
 global using MonoMod;
 global using MonoMod.Cil;
@@ -277,7 +264,6 @@ global using Tomlet.Exceptions;
 global using Tomlet.Models;
 
 global using Unity;
-global using Unity.Audio;
 global using Unity.Profiling;
 global using Unity.Profiling.LowLevel;
 global using Unity.Profiling.LowLevel.Unsafe;
@@ -291,15 +277,11 @@ global using UnityEngine.AddressableAssets.Initialization;
 global using UnityEngine.AddressableAssets.ResourceLocators;
 global using UnityEngine.AddressableAssets.ResourceProviders;
 global using UnityEngine.AddressableAssets.Utility;
-global using UnityEngine.Animations;
-global using UnityEngine.Audio;
 global using UnityEngine.Device;
 global using UnityEngine.Diagnostics;
 global using UnityEngine.Events;
 global using UnityEngine.EventSystems;
-global using UnityEngine.Experimental.Animations;
 global using UnityEngine.Experimental.AssetBundlePatching;
-global using UnityEngine.Experimental.Audio;
 global using UnityEngine.Experimental.GlobalIllumination;
 global using UnityEngine.Experimental.Playables;
 global using UnityEngine.Experimental.Rendering;
@@ -331,8 +313,6 @@ global using UnityEngine.UI;
 global using UnityEngine.UI.Collections;
 
 global using UnityEngineInternal;
-
-global using UnityPlayer;
 
 global using static HarmonyLib.AccessTools;
 

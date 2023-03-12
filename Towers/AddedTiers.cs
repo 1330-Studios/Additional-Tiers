@@ -10,8 +10,8 @@ internal abstract class AddedTiers {
     internal virtual (double progress, bool shouldForm) GetStatus(Tower tower) { return default; }
     internal virtual void GenerateTowerModels(TowerModel baseTower, GameModel gameModel) { }
     internal virtual void Upgrade(TowerToSimulation towerToSimulation) {
-        towerToSimulation.tower.UpdateRootModel(TowerLookup.Instance[Name]);
-        towerToSimulation.tower.UpdatedModel(TowerLookup.Instance[Name]);
+        towerToSimulation.tower.UpdateRootModel(TowerLookup.Instance[$"{Name} T6"]);
+        towerToSimulation.tower.UpdatedModel(TowerLookup.Instance[$"{Name} T6"]);
     }
 
     internal virtual void InGameQuit() { }

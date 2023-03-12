@@ -1,6 +1,6 @@
 ﻿using AdditionalTiers.Utils.Towers;
 
-namespace AdditionalTiers.Towers.Round8.Primary.Boomerang;
+namespace AdditionalTiers.Towers.Round8.Primary.BoomerangMonkey;
 internal class GlaiveCreator : AddedTiers {
     internal override string Name => "Glaive Creator";
     internal override string Description => "Creator of all things Glaive. Bloons beware.";
@@ -16,7 +16,7 @@ internal class GlaiveCreator : AddedTiers {
     internal override void GenerateTowerModels(TowerModel baseTower, GameModel gameModel) {
         var tower = baseTower;
 
-        tower.name = $"{Name}";
+        tower.name = $"{Name} T6";
         tower.SetDisplay("Round8_GLord#10");
         tower.SetIcons("Round8_GC_Portrait");
         tower.range += 5;
@@ -67,7 +67,7 @@ internal class GlaiveCreator : AddedTiers {
 
         var t1 = tower.CloneCast();
         t1.range += 15;
-        t1.name = $"{Name} T1";
+        t1.name = $"{Name} T7";
 
         damageStat = 30;
 
@@ -106,7 +106,7 @@ internal class GlaiveCreator : AddedTiers {
 
         var t2 = t1.CloneCast();
         t2.range += 15;
-        t2.name = $"{Name} T2";
+        t2.name = $"{Name} T8";
 
         t2.behaviors = t2.behaviors.Add(fireball);
 
@@ -159,7 +159,7 @@ internal class GlaiveCreator : AddedTiers {
         }
 
         var t3 = t2.CloneCast();
-        t3.name = $"{Name} T3";
+        t3.name = $"{Name} T9";
 
         damageStat = 120;
 
@@ -211,7 +211,7 @@ internal class GlaiveCreator : AddedTiers {
         }
 
         var t4 = t3.CloneCast();
-        t4.name = $"{Name} T4";
+        t4.name = $"{Name} T10";
 
         damageStat = 3072;
 
@@ -271,10 +271,10 @@ internal class GlaiveCreator : AddedTiers {
 
         #endregion
 
-        TowerRegister.Register(0, tower, "Fire", 100_000, "Round8_GC_Portrait", 0.6, 15, -0.05, 15, 15, "", false, $"{Name} T1");
-        TowerRegister.Register(1, t1, "Fire", 185_000, "Round8_GC_Portrait", 0.55, 30, -0.15, 30, 15, "Fireball", false, $"{Name} T2");
-        TowerRegister.Register(2, t2, "Fire", 200_000, "Round8_GC_Portrait", 0.4, 60, -0.2, 60, 0, "Triple Rangs", false, $"{Name} T3");
-        TowerRegister.Register(3, t3, "Fire", 350_000, "Round8_GC_Portrait", 0.2, 120, -0.19, 60, 0, "Triple Rangs", false, $"{Name} T4");
+        TowerRegister.Register(0, tower, "Fire", 100_000, "Round8_GC_Portrait", 0.6, 15, -0.05, 15, 15, "", false, $"{Name} T7");
+        TowerRegister.Register(1, t1, "Fire", 185_000, "Round8_GC_Portrait", 0.55, 30, -0.15, 30, 15, "Fireball", false, $"{Name} T8");
+        TowerRegister.Register(2, t2, "Fire", 200_000, "Round8_GC_Portrait", 0.4, 60, -0.2, 60, 0, "Triple Rangs", false, $"{Name} T9");
+        TowerRegister.Register(3, t3, "Fire", 350_000, "Round8_GC_Portrait", 0.2, 120, -0.19, 60, 0, "Triple Rangs", false, $"{Name} T10");
         TowerRegister.Register(4, t4, "Fire", 0, "Round8_GC_Portrait", 0.01, 3072, 0, 0, 0, "", true, $"");
     }
 

@@ -56,7 +56,7 @@ internal static class UpgradeMenuManager {
                     return;
                 if (t?.Id == lastTower.Item2 && t?.damageDealt != lastPops) {
                     lastPops = t.damageDealt;
-                    canvasObject.transform.FindChild("DAMAGEDEALT").GetComponent<Text>().text = $"Pops: {t.damageDealt:N0}";
+                    canvasObject.transform.FindChild("DAMAGEDEALT").GetComponent<Text>().text = $"Pops: {lastPops:N0}";
                 }
             }
         }
@@ -116,8 +116,9 @@ internal static class UpgradeMenuManager {
     public static void UpdateUM(string towerName, ObjectId id) {
         var info = towers.ContainsKey(towerName) ? towers[towerName] : default;
 
-        var tower = InGame.instance.bridge.GetTower(id);
-        canvasObject.transform.FindChild("NAME").GetComponent<Text>().text = $"{info.Name}|{info.CurrentUpgrade}";
+        var tower = InGame.Bridge.GetTower(id);
+        canvasObject.transform.FindChild("NAME").GetComponent<Text>().fontSize = 13;
+        canvasObject.transform.FindChild("NAME").GetComponent<Text>().text = info.Name;
         canvasObject.transform.FindChild("TOWERTYPE").GetComponent<Text>().text = info.TowerType;
 
         var upgradeButton = canvasObject.transform.FindChild("UPGRADEBUTTON").GetComponent<Button>();
@@ -125,22 +126,22 @@ internal static class UpgradeMenuManager {
 
         if (!info.MaxUpgrade) {
             upgradeButton.onClick.AddListener(new Action(() => {
-                if (InGame.instance.bridge.GetCash(-1) >= info.UpgradeCost) {
-                    InGame.instance.bridge.SetCash(System.Math.Max(InGame.instance.bridge.GetCash(-1) - info.UpgradeCost, 0));
+                if (InGame.Bridge.GetCash(InGame.Bridge.MyPlayerNumber) >= info.UpgradeCost) {
+                    InGame.Bridge.SetCash(System.Math.Max(InGame.Bridge.GetCash(InGame.Bridge.MyPlayerNumber) - info.UpgradeCost, 0));
                     var tower = towers[info.NextUpgradeName].TowerModel;
                     lastTower = new Tuple<string, ObjectId>(tower.name, id);
-                    InGame.instance.bridge.GetTower(id).tower.UpdateRootModel(tower);
-                    InGame.instance.bridge.GetTower(id).tower.UpdatedModel(tower);
-                    InGame.instance.bridge.GetTower(id).tower.worth += info.UpgradeCost;
+                    InGame.Bridge.GetTower(id).tower.UpdateRootModel(tower);
+                    InGame.Bridge.GetTower(id).tower.UpdatedModel(tower);
+                    InGame.Bridge.GetTower(id).tower.worth += info.UpgradeCost;
 
-                    AbilityMenu.instance.TowerChanged(InGame.instance.bridge.GetTower(id));
+                    AbilityMenu.instance.TowerChanged(InGame.Bridge.GetTower(id));
                     AbilityMenu.instance.RebuildAbilities();
 
                     UpdateUM(tower.name, id);
                 }
             }));
 
-            upgradeButton.transform.FindChild("UPGRADECOST").GetComponent<Text>().text = $"${info.UpgradeCost}";
+            upgradeButton.transform.FindChild("UPGRADECOST").GetComponent<Text>().text = $"{info.UpgradeCost:C0}";
         } else {
             upgradeButton.transform.FindChild("UPGRADECOST").GetComponent<Text>().text = "MAXED";
         }
@@ -148,16 +149,16 @@ internal static class UpgradeMenuManager {
         var sellButton = canvasObject.transform.FindChild("SELLBUTTON").GetComponent<Button>();
         sellButton.onClick.RemoveAllListeners();
         sellButton.onClick.AddListener(new Action(() => {
-            InGame.instance.bridge.SellTower(id);
+            InGame.Bridge.SellTower(id);
             canvasObject.SetActive(false);
         }));
 
-        sellButton.transform.FindChild("SELLCOST").GetComponent<Text>().text = $"${(int)tower.sellFor}";
+        sellButton.transform.FindChild("SELLCOST").GetComponent<Text>().text = $"{(int)tower.sellFor:C0}";
 
         var targetingButton = canvasObject.transform.FindChild("TARGETING").GetComponent<Button>();
         targetingButton.onClick.RemoveAllListeners();
         targetingButton.onClick.AddListener(new Action(() => {
-            InGame.instance.bridge.GetTower(id).tower.SetNextTargetType();
+            InGame.Bridge.GetTower(id).tower.SetNextTargetType();
             UpdateUM(towerName, id);
         }));
 
@@ -177,17 +178,19 @@ internal static class UpgradeMenuManager {
 
         var curStats = canvasObject.transform.FindChild("STATS");
 
-        curStats.transform.FindChild("SPA").GetComponent<Text>().text = info.CurrentSPA.ToString("N2") + " Seconds";
+        curStats.transform.FindChild("SPA").GetComponent<Text>().text = info.CurrentSPA.ToString() + " Seconds";
         curStats.transform.FindChild("DAMAGE").GetComponent<Text>().text = info.CurrentDamage.ToString("N0");
         curStats.transform.FindChild("RANGE").GetComponent<Text>().text = tower.tower.towerModel.range.ToString("N0");
 
 
         var upgradeStats = canvasObject.transform.FindChild("NEXTUPGRADE");
-        upgradeStats.transform.FindChild("SPA").GetComponent<Text>().text = $"{(info.NextSPA >= 0 ? "+" : "")}{info.NextSPA:N2}";
+        upgradeStats.transform.FindChild("SPA").GetComponent<Text>().text = $"{(info.NextSPA >= 0 ? "+" : "")}{info.NextSPA}";
         upgradeStats.transform.FindChild("DAMAGE").GetComponent<Text>().text = $"{(info.NextDamage >= 0 ? "+" : "")}{info.NextDamage:N1}";
         upgradeStats.transform.FindChild("RANGE").GetComponent<Text>().text = $"{(info.NextRange >= 0 ? "+" : "")}{info.NextRange:N1}";
-        upgradeStats.transform.FindChild("EXTRA").GetComponent<Text>().text = "";
-        if (!string.IsNullOrEmpty(info.Extra as string))
+
+        if (!string.IsNullOrEmpty(info.Extra))
             upgradeStats.transform.FindChild("EXTRA").GetComponent<Text>().text = $"[+{info.Extra}]";
+        else
+            upgradeStats.transform.FindChild("EXTRA").GetComponent<Text>().text = "";
     }
 }

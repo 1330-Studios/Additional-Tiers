@@ -1,8 +1,12 @@
-﻿namespace AdditionalTiers.Utils;
+﻿using System.Diagnostics;
+
+namespace AdditionalTiers.Utils;
 
 internal static class RuntimeInfo {
     internal static string ModVersion;
     internal static string GameVersion;
+
+    internal static bool ISDEBUG;
 
     internal static MelonLogger.Instance Logger;
 
@@ -13,6 +17,8 @@ internal static class RuntimeInfo {
     internal static void Initialize(MelonAssembly masm, MelonLogger.Instance instance) {
         ModVersion = masm.Assembly.GetName().Version.ToString();
         GameVersion = UnityInformationHandler.GameVersion;
+
+        ISDEBUG = masm.Assembly.GetCustomAttributes(false).OfType<DebuggableAttribute>().Any(da => da.IsJITTrackingEnabled);
 
         Logger = instance;
     }
