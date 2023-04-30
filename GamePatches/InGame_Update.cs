@@ -8,7 +8,7 @@ namespace AdditionalTiers.GamePatches;
 internal static class InGame_Update {
     [HarmonyPostfix]
     internal static void Postfix(InGame __instance) {
-        if (__instance == null || __instance.bridge == null || __instance.bridge.GetAllTowers() == null) {
+        if (__instance == null || __instance.bridge?.GetAllTowers() == null) {
             TransformationManager.Clear();
             return;
         }
@@ -21,18 +21,17 @@ internal static class InGame_Update {
                 var form = TransformationManager.Get(towerToSimulation.tower);
                 form.AddedTiers.InGameUpdate(towerToSimulation);
             } else {
-                foreach (var addedTier in LoaderLoader.GetLoaderInstance<AddedTiers>().Get()) {
-                    if (towerModel.tiers[addedTier.Path] == 5 && addedTier.BaseTower.Split('-')[0].Trim().Equals(towerModel.baseId.Trim())) {
-                        var (progress, shouldForm) = addedTier.GetStatus(towerToSimulation.tower);
+                foreach (var addedTier in LoaderLoader.GetLoaderInstance<AddedTiers>().Get().Where(addedTier => towerModel.tiers[addedTier.Path] == 5 &&
+                             addedTier.BaseTower.Split('-')[0].Trim().Equals(towerModel.baseId.Trim()))) {
+                    var (progress, shouldForm) = addedTier.GetStatus(towerToSimulation.tower);
 
-                        if (shouldForm) {
-                            addedTier.Upgrade(towerToSimulation);
-                            TransformationManager.Add(new TransformationManager.Transformation(addedTier, towerToSimulation.tower.Id));
-                            AbilityMenu.instance.TowerChanged(towerToSimulation);
-                            AbilityMenu.instance.RebuildAbilities();
-                        } else {
-                            RoundDisplay_OnUpdate.Data.Add((addedTier.Name, progress));
-                        }
+                    if (shouldForm) {
+                        addedTier.Upgrade(towerToSimulation);
+                        TransformationManager.Add(new TransformationManager.Transformation(addedTier, towerToSimulation.tower.Id));
+                        AbilityMenu.instance.TowerChanged(towerToSimulation);
+                        AbilityMenu.instance.RebuildAbilities();
+                    } else {
+                        RoundDisplay_OnUpdate.Data.Add((addedTier.Name, progress));
                     }
                 }
             }

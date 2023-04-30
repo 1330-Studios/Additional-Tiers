@@ -1,20 +1,13 @@
 ﻿namespace AdditionalTiers.Utils.Extensions;
 internal static class Il2CppExtensions {
-    public static Il2CppReferenceArray<T> Remove<T>(this Il2CppReferenceArray<T> reference, Func<T, bool> predicate) where T : Model {
-        var bases = new List<T>();
-        foreach (var tmp in reference)
-            if (!predicate(tmp))
-                bases.Add(tmp);
-
-        return new(bases.ToArray());
-    }
+    public static Il2CppReferenceArray<T> Remove<T>(this Il2CppReferenceArray<T> reference, Func<T, bool> predicate) where T : Model => new(reference.Where(tmp => !predicate(tmp)).ToArray());
     public static Il2CppReferenceArray<T> Add<T>(this Il2CppReferenceArray<T> reference, params T[] newPart) where T : Model => ConcatArrayParams(reference, newPart);
     public static Il2CppReferenceArray<T> Add<T>(this Il2CppReferenceArray<T> reference, IEnumerable<T> enumerable) where T : Model => ConcatArrayEnumerable(reference, enumerable);
     public static T[] Add<T>(this T[] reference, params T[] newPart) where T : Model => ConcatArrayParams(reference, newPart);
 
     public static Il2CppSystem.Collections.Generic.IEnumerable<TC> SelectI<T, TR, TC>(this IEnumerable<T> enumerable, Func<T, TR> predicate) where TR : Il2CppObjectBase where TC : Il2CppObjectBase {
         var bases = new Il2CppSystem.Collections.Generic.List<TC>();
-        var enumerator = enumerable.GetEnumerator();
+        using var enumerator = enumerable.GetEnumerator();
         while (enumerator.MoveNext())
             bases.Add(predicate(enumerator.Current).Cast<TC>());
         return bases.Cast<Il2CppSystem.Collections.Generic.IEnumerable<TC>>();
@@ -35,8 +28,8 @@ internal static class Il2CppExtensions {
     public static Il2CppReferenceArray<T> ToIl2CppArray<T>(this T[] array) where T : Il2CppObjectBase => new(array);
     public static Il2CppSystem.Collections.Generic.List<T> ToIl2CppList<T>(this T[] array) where T : Il2CppObjectBase {
         Il2CppSystem.Collections.Generic.List<T> list = new();
-        for (var i = 0; i < array.Length; i++)
-            list.Add(array[i]);
+        foreach (var t in array)
+            list.Add(t);
 
         return list;
     }
@@ -44,29 +37,13 @@ internal static class Il2CppExtensions {
     public static T CloneCast<T>(this Model obj) where T : Model => obj.Clone().Cast<T>();
     public static T CloneCast<T>(this T obj) where T : Model => obj.Clone().Cast<T>();
 
-    public static T[] CloneCastArr<T>(this T[] obj) where T : Model {
-        List<T> cloned = new();
+    public static T[] CloneCastArr<T>(this T[] obj) where T : Model => obj.Select(t => t.CloneCast()).ToArray();
 
-        for (int i = 0; i < obj.Length; i++) {
-            cloned.Add(obj[i].CloneCast());
-        }
+    public static T[] CloneCastArr<T>(this Model[] obj) where T : Model => obj.Select(t => t.CloneCast<T>()).ToArray();
 
-        return cloned.ToArray();
-    }
-
-    public static T[] CloneCastArr<T>(this Model[] obj) where T : Model {
-        List<T> cloned = new();
-
-        for (int i = 0; i < obj.Length; i++) {
-            cloned.Add(obj[i].CloneCast<T>());
-        }
-
-        return cloned.ToArray();
-    }
-
-    private static T[] ConcatArray<T>(T[] a, T[] b) {
-        var m = a.Length;
-        var n = b.Length;
+    private static T[] ConcatArray<T>(IReadOnlyList<T> a, IReadOnlyList<T> b) {
+        var m = a.Count;
+        var n = b.Count;
         var arr = new T[m + n];
 
         for (var i = 0; i < m + n; i++)

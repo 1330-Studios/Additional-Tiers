@@ -9,13 +9,13 @@ internal class Round8Scale : MonoBehaviour {
 
     public void Start() {
         if (gameObject != null && gameObject.transform.localScale.z != Scale) {
-            gameObject.transform.localScale = new(Scale, Scale, Scale);
+            gameObject.transform.localScale = new Vector3(Scale, Scale, Scale);
         }
     }
 
     public void Update() {
         if (gameObject != null && gameObject.transform.localScale.z != Scale) {
-            gameObject.transform.localScale = new(Scale, Scale, Scale);
+            gameObject.transform.localScale = new Vector3(Scale, Scale, Scale);
         }
     }
 }

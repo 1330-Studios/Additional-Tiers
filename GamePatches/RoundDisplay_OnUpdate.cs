@@ -7,8 +7,8 @@ internal static class RoundDisplay_OnUpdate {
     [HarmonyPostfix]
     public static void Fix(ref RoundDisplay __instance) {
         __instance.text.text = $"{__instance.cachedRoundDisp}\n";
-        Data.Sort((s1, s2) => s1.Item1.CompareTo(s2.Item1));
-        for (int i = 0; i < Data.Count; i++) {
+        Data.Sort((s1, s2) => string.Compare(s1.Item1, s2.Item1, StringComparison.Ordinal));
+        for (var i = 0; i < Data.Count; i++) {
             if (i < 5)
                 __instance.text.text += string.Format(style, Data[i].Item1, Data[i].Item2) + "\n";
             else if (!Input.GetKey(KeyCode.F1)) {

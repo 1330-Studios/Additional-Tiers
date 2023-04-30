@@ -7,11 +7,11 @@ internal static class TowerModelExtensions {
         tower.display.guidRef = display;
         if (!displayModel) {
             if (tower.HasBehavior<AirUnitModel>()) {
-                tower.behaviors.First(m => m.GetIl2CppType().Equals(Il2CppType.Of<AirUnitModel>())).Cast<AirUnitModel>().display = new() { guidRef = display };
+                tower.behaviors.First(m => m.GetIl2CppType().Equals(Il2CppType.Of<AirUnitModel>())).Cast<AirUnitModel>().display = new PrefabReference { guidRef = display };
             }
         } else {
             if (tower.HasBehavior<DisplayModel>())
-                tower.behaviors.First(m => m.GetIl2CppType().Equals(Il2CppType.Of<DisplayModel>())).Cast<DisplayModel>().display = new() { guidRef = display };
+                tower.behaviors.First(m => m.GetIl2CppType().Equals(Il2CppType.Of<DisplayModel>())).Cast<DisplayModel>().display = new PrefabReference { guidRef = display };
         }
     }
 }

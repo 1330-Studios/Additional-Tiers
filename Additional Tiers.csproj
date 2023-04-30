@@ -54,9 +54,6 @@
     <Reference Include="Il2CppDebugLog">
       <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\BloonsTD6\MelonLoader\Il2CppAssemblies\Il2CppDebugLog.dll</HintPath>
     </Reference>
-    <Reference Include="Il2CppFacebook.Unity.Settings">
-      <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\BloonsTD6\MelonLoader\Il2CppAssemblies\Il2CppFacebook.Unity.Settings.dll</HintPath>
-    </Reference>
     <Reference Include="Il2CppFacepunch.Steamworks">
       <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\BloonsTD6\MelonLoader\Il2CppAssemblies\Il2CppFacepunch.Steamworks.dll</HintPath>
     </Reference>

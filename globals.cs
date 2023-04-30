@@ -120,7 +120,6 @@ global using Il2CppAssets.Scripts.Simulation.Towers.Behaviors.Abilities.Behavior
 global using Il2CppAssets.Scripts.Simulation.Towers.Behaviors.Attack;
 global using Il2CppAssets.Scripts.Simulation.Towers.Behaviors.Attack.Behaviors;
 global using Il2CppAssets.Scripts.Simulation.Towers.Behaviors.PlacementBehaviors;
-global using Il2CppAssets.Scripts.Simulation.Towers.Buffs;
 global using Il2CppAssets.Scripts.Simulation.Towers.Emissions;
 global using Il2CppAssets.Scripts.Simulation.Towers.Emissions.Behaviors;
 global using Il2CppAssets.Scripts.Simulation.Towers.Emmisions;

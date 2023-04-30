@@ -41,7 +41,7 @@
 
 namespace DLLUtils;
 
-public unsafe class DLLFromMemory : IDisposable {
+public class DLLFromMemory : IDisposable {
 
     public class DllException : Exception {
 
@@ -109,7 +109,7 @@ public unsafe class DLLFromMemory : IDisposable {
         if (delegateType == null) throw new ArgumentNullException(nameof(delegateType));
         if (!typeof(Delegate).IsAssignableFrom(delegateType)) throw new ArgumentException(delegateType.Name + " is not a delegate");
         var res = Marshal.GetDelegateForFunctionPointer(GetPtrFromFuncName(funcName), delegateType);
-        return res ?? throw new DllException("Unable to get managed delegate");
+        return res;
     }
 
     private IntPtr GetPtrFromFuncName(string funcName) {

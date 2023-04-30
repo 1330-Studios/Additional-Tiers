@@ -8,93 +8,92 @@ internal class GlaiveCreator : AddedTiers {
     internal override int Path => 0;
 
     internal override (double progress, bool shouldForm) GetStatus(Tower tower) {
-        var perc = tower.damageDealt / 100_000.0;
+        var percentage = tower.damageDealt / 100_000.0;
 
-        return (perc, perc > 1);
+        return (percentage, percentage > 1);
     }
 
     internal override void GenerateTowerModels(TowerModel baseTower, GameModel gameModel) {
-        var tower = baseTower;
-
-        tower.name = $"{Name} T6";
-        tower.SetDisplay("Round8_GLord#10");
-        tower.SetIcons("Round8_GC_Portrait");
-        tower.range += 5;
-        tower.dontDisplayUpgrades = true;
+        baseTower.name = $"{Name} T6";
+        baseTower.SetDisplay("Round8_GLord#10");
+        baseTower.SetIcons("Round8_GC_Portrait");
+        baseTower.range += 5;
+        baseTower.dontDisplayUpgrades = true;
 
         float damageStat = 15;
 
         #region Legacy Code
         var flames = gameModel.towers.First(a => a.name.Equals("TackShooter-500")).CloneCast().behaviors.First(a => a.Is<AttackModel>() && !a.name.Contains("Meteor")).CloneCast<AttackModel>();
         flames.name = "AttackModel_AttackFlames_";
-        flames.weapons[0].projectile.collisionPasses = new int[] { 0 };
+        flames.weapons[0].projectile.collisionPasses = new[] { 0 };
 
-        for (int i = 0; i < tower.behaviors.Length; i++) {
-            if (tower.behaviors[i].Is<AttackModel>(out var am)) {
+        foreach (var t in baseTower.behaviors) {
+            if (t.Is<AttackModel>(out var am)) {
                 am.range += 5;
                 if (am.name.Contains("Orbit")) {
                     foreach (var projectileBehavior in am.weapons[0].projectile.behaviors) {
-                        if (projectileBehavior.Is<DamageModel>(out var dm)) {
-                            dm.damage = damageStat / 3;
-                            dm.immuneBloonProperties = dm.immuneBloonPropertiesOriginal = BloonProperties.None;
-                        }
+                        if (!projectileBehavior.Is<DamageModel>(out var dm)) continue;
+                        dm.damage = damageStat / 3;
+                        dm.immuneBloonProperties = dm.immuneBloonPropertiesOriginal = BloonProperties.None;
                     }
                 }
 
-                if (am.name.Contains("AttackModel_Attack_")) {
+                if (!am.name.Contains("AttackModel_Attack_")) continue;
+                {
                     foreach (var projectileBehavior in am.weapons[0].projectile.behaviors) {
                         if (projectileBehavior.Is<DamageModel>(out var dm)) {
                             dm.damage = damageStat;
                             dm.immuneBloonProperties = dm.immuneBloonPropertiesOriginal = BloonProperties.None;
                         } else if (projectileBehavior.Is<TravelStraitModel>(out var tsm)) {
                             tsm.Lifespan += 8;
-                        } else if (projectileBehavior.Is<DamageModifierForTagModel>(out var dmftm)) {
-                            dmftm.damageMultiplier++;
+                        } else if (projectileBehavior.Is<DamageModifierForTagModel>(out var damageModifierForTagModel)) {
+                            damageModifierForTagModel.damageMultiplier++;
                         }
                     }
 
                     am.weapons[0].projectile.behaviors = am.weapons[0].projectile.behaviors.Add(
-                        new Il2CppAssets.Scripts.Models.Towers.Projectiles.Behaviors.CreateEffectOnExpireModel("CEOEM_", new() { guidRef = "6d84b13b7622d2744b8e8369565bc058" },
-                        1, false, true, new EffectModel("Effect", new() { guidRef = "6d84b13b7622d2744b8e8369565bc058" }, 1, 1)));
+                        new Il2CppAssets.Scripts.Models.Towers.Projectiles.Behaviors.CreateEffectOnExpireModel("CreateEffectOnExpireModel_", new PrefabReference { guidRef = "6d84b13b7622d2744b8e8369565bc058" },
+                            1, false, true, new EffectModel("Effect", new PrefabReference { guidRef = "6d84b13b7622d2744b8e8369565bc058" }, 1, 1)));
                 }
-            } else if (tower.behaviors[i].Is<OrbitModel>(out var om)) {
+            } else if (t.Is<OrbitModel>(out var om)) {
                 om.range += 5;
                 om.count++;
             }
         }
 
-        tower.behaviors = tower.behaviors.Add(new OverrideCamoDetectionModel("OCDM_", true), flames);
+        baseTower.behaviors = baseTower.behaviors.Add(new OverrideCamoDetectionModel("OverrideCamoDetectionModel_", true), flames);
 
-        var t1 = tower.CloneCast();
+        var t1 = baseTower.CloneCast();
         t1.range += 15;
         t1.name = $"{Name} T7";
 
         damageStat = 30;
 
-        for (int i = 0; i < t1.behaviors.Length; i++) {
-            if (t1.behaviors[i].Is<AttackModel>(out var am)) {
+        foreach (var t in t1.behaviors) {
+            if (t.Is<AttackModel>(out var am)) {
                 am.range += 15;
                 if (am.name.Contains("Orbit")) {
                     foreach (var projectileBehavior in am.weapons[0].projectile.behaviors) {
-                        if (projectileBehavior.Is<DamageModel>(out var dm)) {
-                            dm.damage = damageStat / 3;
-                            dm.immuneBloonProperties = dm.immuneBloonPropertiesOriginal = BloonProperties.None;
-                        }
+                        if (!projectileBehavior.Is<DamageModel>(out var dm)) continue;
+                        dm.damage = damageStat / 3;
+                        dm.immuneBloonProperties = dm.immuneBloonPropertiesOriginal = BloonProperties.None;
                     }
                 }
 
-                if (am.name.Contains("AttackModel_Attack_") || am.name.Contains("AttackModel_AttackFlames_")) {
+                if (!am.name.Contains("AttackModel_Attack_") &&
+                    !am.name.Contains("AttackModel_AttackFlames_")) continue;
+                {
                     am.weapons[0].Rate -= 0.05f;
                     foreach (var projectileBehavior in am.weapons[0].projectile.behaviors) {
                         if (projectileBehavior.Is<DamageModel>(out var dm)) {
                             dm.damage = damageStat;
                             dm.immuneBloonProperties = dm.immuneBloonPropertiesOriginal = BloonProperties.None;
-                        } else if (projectileBehavior.Is<DamageModifierForTagModel>(out var dmftm)) {
-                            dmftm.damageMultiplier++;
+                        } else if (projectileBehavior.Is<DamageModifierForTagModel>(out var damageModifierForTagModel)) {
+                            damageModifierForTagModel.damageMultiplier++;
                         }
                     }
                 }
-            } else if (t1.behaviors[i].Is<OrbitModel>(out var om)) {
+            } else if (t.Is<OrbitModel>(out var om)) {
                 om.range += 5;
                 om.count++;
             }
@@ -112,15 +111,14 @@ internal class GlaiveCreator : AddedTiers {
 
         damageStat = 60;
 
-        for (int i = 0; i < t2.behaviors.Length; i++) {
-            if (t2.behaviors[i].Is<AttackModel>(out var am)) {
+        foreach (var t in t2.behaviors) {
+            if (t.Is<AttackModel>(out var am)) {
                 am.range += 15;
                 if (am.name.Contains("Orbit")) {
                     foreach (var projectileBehavior in am.weapons[0].projectile.behaviors) {
-                        if (projectileBehavior.Is<DamageModel>(out var dm)) {
-                            dm.damage = damageStat / 3;
-                            dm.immuneBloonProperties = dm.immuneBloonPropertiesOriginal = BloonProperties.None;
-                        }
+                        if (!projectileBehavior.Is<DamageModel>(out var dm)) continue;
+                        dm.damage = damageStat / 3;
+                        dm.immuneBloonProperties = dm.immuneBloonPropertiesOriginal = BloonProperties.None;
                     }
                 }
 
@@ -132,28 +130,28 @@ internal class GlaiveCreator : AddedTiers {
                             dm.immuneBloonProperties = dm.immuneBloonPropertiesOriginal = BloonProperties.None;
                         } else if (projectileBehavior.Is<TravelStraitModel>(out var tsm)) {
                             tsm.Speed *= 1.25f;
-                        } else if (projectileBehavior.Is<DamageModifierForTagModel>(out var dmftm)) {
-                            dmftm.damageMultiplier++;
+                        } else if (projectileBehavior.Is<DamageModifierForTagModel>(out var damageModifierForTagModel)) {
+                            damageModifierForTagModel.damageMultiplier++;
                         }
                     }
                 }
 
-                if (am.name.Contains("AttackModel_AttackFireball_")) {
+                if (!am.name.Contains("AttackModel_AttackFireball_")) continue;
+                {
                     foreach (var projectileBehavior in am.weapons[0].projectile.behaviors) {
                         if (projectileBehavior.Is<DamageModel>(out var dm)) {
                             dm.damage = damageStat;
                             dm.immuneBloonProperties = dm.immuneBloonPropertiesOriginal = BloonProperties.None;
-                        } else if (projectileBehavior.Is<CreateProjectileOnContactModel>(out var cpocm)) {
-                            foreach (var cprojectileBehavior in cpocm.projectile.behaviors) {
-                                if (cprojectileBehavior.Is<DamageModel>(out var cdm)) {
-                                    cdm.damage = damageStat;
-                                    cdm.immuneBloonProperties = cdm.immuneBloonPropertiesOriginal = BloonProperties.None;
-                                }
+                        } else if (projectileBehavior.Is<CreateProjectileOnContactModel>(out var createProjectileOnContactModel)) {
+                            foreach (var createdProjectileBehavior in createProjectileOnContactModel.projectile.behaviors) {
+                                if (!createdProjectileBehavior.Is<DamageModel>(out var cdm)) continue;
+                                cdm.damage = damageStat;
+                                cdm.immuneBloonProperties = cdm.immuneBloonPropertiesOriginal = BloonProperties.None;
                             }
                         }
                     }
                 }
-            } else if (t2.behaviors[i].Is<OrbitModel>(out var om)) {
+            } else if (t.Is<OrbitModel>(out var om)) {
                 om.count++;
             }
         }
@@ -163,14 +161,13 @@ internal class GlaiveCreator : AddedTiers {
 
         damageStat = 120;
 
-        for (int i = 0; i < t3.behaviors.Length; i++) {
-            if (t3.behaviors[i].Is<AttackModel>(out var am)) {
+        foreach (var t in t3.behaviors) {
+            if (t.Is<AttackModel>(out var am)) {
                 if (am.name.Contains("Orbit")) {
                     foreach (var projectileBehavior in am.weapons[0].projectile.behaviors) {
-                        if (projectileBehavior.Is<DamageModel>(out var dm)) {
-                            dm.damage = damageStat / 3;
-                            dm.immuneBloonProperties = dm.immuneBloonPropertiesOriginal = BloonProperties.None;
-                        }
+                        if (!projectileBehavior.Is<DamageModel>(out var dm)) continue;
+                        dm.damage = damageStat / 3;
+                        dm.immuneBloonProperties = dm.immuneBloonPropertiesOriginal = BloonProperties.None;
                     }
                 }
 
@@ -184,28 +181,28 @@ internal class GlaiveCreator : AddedTiers {
                             dm.immuneBloonProperties = dm.immuneBloonPropertiesOriginal = BloonProperties.None;
                         } else if (projectileBehavior.Is<TravelStraitModel>(out var tsm)) {
                             tsm.Speed *= 1.5f;
-                        } else if (projectileBehavior.Is<DamageModifierForTagModel>(out var dmftm)) {
-                            dmftm.damageMultiplier++;
+                        } else if (projectileBehavior.Is<DamageModifierForTagModel>(out var damageModifierForTagModel)) {
+                            damageModifierForTagModel.damageMultiplier++;
                         }
                     }
                 }
 
-                if (am.name.Contains("AttackModel_AttackFireball_")) {
+                if (!am.name.Contains("AttackModel_AttackFireball_")) continue;
+                {
                     foreach (var projectileBehavior in am.weapons[0].projectile.behaviors) {
                         if (projectileBehavior.Is<DamageModel>(out var dm)) {
                             dm.damage = damageStat;
                             dm.immuneBloonProperties = dm.immuneBloonPropertiesOriginal = BloonProperties.None;
-                        } else if (projectileBehavior.Is<CreateProjectileOnContactModel>(out var cpocm)) {
-                            foreach (var cprojectileBehavior in cpocm.projectile.behaviors) {
-                                if (cprojectileBehavior.Is<DamageModel>(out var cdm)) {
-                                    cdm.damage = damageStat;
-                                    cdm.immuneBloonProperties = cdm.immuneBloonPropertiesOriginal = BloonProperties.None;
-                                }
+                        } else if (projectileBehavior.Is<CreateProjectileOnContactModel>(out var createProjectileOnContactModel)) {
+                            foreach (var createdProjectileBehavior in createProjectileOnContactModel.projectile.behaviors) {
+                                if (!createdProjectileBehavior.Is<DamageModel>(out var cdm)) continue;
+                                cdm.damage = damageStat;
+                                cdm.immuneBloonProperties = cdm.immuneBloonPropertiesOriginal = BloonProperties.None;
                             }
                         }
                     }
                 }
-            } else if (t3.behaviors[i].Is<OrbitModel>(out var om)) {
+            } else if (t.Is<OrbitModel>(out var om)) {
                 om.count++;
             }
         }
@@ -215,15 +212,14 @@ internal class GlaiveCreator : AddedTiers {
 
         damageStat = 3072;
 
-        for (int i = 0; i < t4.behaviors.Length; i++) {
-            if (t4.behaviors[i].Is<AttackModel>(out var am)) {
+        foreach (var t in t4.behaviors) {
+            if (t.Is<AttackModel>(out var am)) {
                 am.weapons[0].Rate *= 0.05f;
                 if (am.name.Contains("Orbit")) {
                     foreach (var projectileBehavior in am.weapons[0].projectile.behaviors) {
-                        if (projectileBehavior.Is<DamageModel>(out var dm)) {
-                            dm.damage = damageStat;
-                            dm.immuneBloonProperties = dm.immuneBloonPropertiesOriginal = BloonProperties.None;
-                        }
+                        if (!projectileBehavior.Is<DamageModel>(out var dm)) continue;
+                        dm.damage = damageStat;
+                        dm.immuneBloonProperties = dm.immuneBloonPropertiesOriginal = BloonProperties.None;
                     }
                 }
 
@@ -231,7 +227,7 @@ internal class GlaiveCreator : AddedTiers {
                     am.weapons[0].emission = new ArcEmissionModel("AEM_", 10, 0, 100, null, false);
 
                     if (am.name.Contains("AttackModel_Attack_")) {
-                        am.weapons[0].projectile.behaviors = am.weapons[0].projectile.behaviors.Add(new DamageModifierForTagModel("DMFTM_", "Moabs", 5, 10, false, true));
+                        am.weapons[0].projectile.behaviors = am.weapons[0].projectile.behaviors.Add(new DamageModifierForTagModel("DamageModifierForTagModel_", "Moabs", 5, 10, false, true));
                     }
                     if (am.name.Contains("AttackModel_AttackFlames_")) {
                         am.weapons[0].Rate *= 0.05f;
@@ -243,35 +239,35 @@ internal class GlaiveCreator : AddedTiers {
                             dm.immuneBloonProperties = dm.immuneBloonPropertiesOriginal = BloonProperties.None;
                         } else if (projectileBehavior.Is<TravelStraitModel>(out var tsm)) {
                             tsm.Speed *= 1.75f;
-                        } else if (projectileBehavior.Is<DamageModifierForTagModel>(out var dmftm)) {
-                            dmftm.damageMultiplier++;
+                        } else if (projectileBehavior.Is<DamageModifierForTagModel>(out var damageModifierForTagModel)) {
+                            damageModifierForTagModel.damageMultiplier++;
                         }
                     }
                 }
 
-                if (am.name.Contains("AttackModel_AttackFireball_")) {
+                if (!am.name.Contains("AttackModel_AttackFireball_")) continue;
+                {
                     foreach (var projectileBehavior in am.weapons[0].projectile.behaviors) {
                         if (projectileBehavior.Is<DamageModel>(out var dm)) {
                             dm.damage = damageStat;
                             dm.immuneBloonProperties = dm.immuneBloonPropertiesOriginal = BloonProperties.None;
-                        } else if (projectileBehavior.Is<CreateProjectileOnContactModel>(out var cpocm)) {
-                            foreach (var cprojectileBehavior in cpocm.projectile.behaviors) {
-                                if (cprojectileBehavior.Is<DamageModel>(out var cdm)) {
-                                    cdm.damage = damageStat;
-                                    cdm.immuneBloonProperties = cdm.immuneBloonPropertiesOriginal = BloonProperties.None;
-                                }
+                        } else if (projectileBehavior.Is<CreateProjectileOnContactModel>(out var createProjectileOnContactModel)) {
+                            foreach (var createdProjectileBehavior in createProjectileOnContactModel.projectile.behaviors) {
+                                if (!createdProjectileBehavior.Is<DamageModel>(out var cdm)) continue;
+                                cdm.damage = damageStat;
+                                cdm.immuneBloonProperties = cdm.immuneBloonPropertiesOriginal = BloonProperties.None;
                             }
                         }
                     }
                 }
-            } else if (t4.behaviors[i].Is<OrbitModel>(out var om)) {
+            } else if (t.Is<OrbitModel>(out var om)) {
                 om.count += 2;
             }
         }
 
         #endregion
 
-        TowerRegister.Register(0, tower, "Fire", 100_000, "Round8_GC_Portrait", 0.6, 15, -0.05, 15, 15, "", false, $"{Name} T7");
+        TowerRegister.Register(0, baseTower, "Fire", 100_000, "Round8_GC_Portrait", 0.6, 15, -0.05, 15, 15, "", false, $"{Name} T7");
         TowerRegister.Register(1, t1, "Fire", 185_000, "Round8_GC_Portrait", 0.55, 30, -0.15, 30, 15, "Fireball", false, $"{Name} T8");
         TowerRegister.Register(2, t2, "Fire", 200_000, "Round8_GC_Portrait", 0.4, 60, -0.2, 60, 0, "Triple Rangs", false, $"{Name} T9");
         TowerRegister.Register(3, t3, "Fire", 350_000, "Round8_GC_Portrait", 0.2, 120, -0.19, 60, 0, "Triple Rangs", false, $"{Name} T10");
@@ -279,9 +275,8 @@ internal class GlaiveCreator : AddedTiers {
     }
 
     internal override void Animation(Attack attack, Tower tower) {
-        if (tower.towerModel.name.StartsWith(Name) && !attack.attackModel.name.Contains("Orbit")) {
-            tower.Node.graphic.GetComponent<Animator>().StopPlayback();
-            tower.Node.graphic.GetComponent<Animator>().Play("Attack");
-        }
+        if (!tower.towerModel.name.StartsWith(Name) || attack.attackModel.name.Contains("Orbit")) return;
+        tower.Node.graphic.GetComponent<Animator>().StopPlayback();
+        tower.Node.graphic.GetComponent<Animator>().Play("Attack");
     }
 }

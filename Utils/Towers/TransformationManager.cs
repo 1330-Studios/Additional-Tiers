@@ -24,49 +24,27 @@ internal static class TransformationManager {
     }
 
     internal static Transformation Get(Tower tower) {
-        for (var i = 0; i < ActiveTransformations.Count; i++) {
-            var transformation = ActiveTransformations[i];
-            if (transformation.TowerID == tower.Id)
-                return transformation;
+        foreach (var transformation in ActiveTransformations.Where(transformation => transformation.TowerID == tower.Id))
+        {
+            return transformation;
         }
 
         ThrowHelper.ThrowNoMatchException();
         return default;
     }
 
-    internal static void Replace(Tower tower, Transformation transformation) {
-        for (var i = 0; i < ActiveTransformations.Count; i++) {
-            if (tower.Id == ActiveTransformations[i].TowerID)
-                ActiveTransformations[i] = transformation;
-        }
-    }
-
-    internal static void Remove(Tower tower) {
-        var index = -1;
-        for (var i = 0; i < ActiveTransformations.Count; i++) {
-            if (tower.Id == ActiveTransformations[i].TowerID)
-                index = i;
-        }
-        ActiveTransformations.RemoveAt(index);
-    }
-
-    internal static bool Contains(Tower tower) {
-        for (var i = 0; i < ActiveTransformations.Count; i++) {
-            var transformation = ActiveTransformations[i];
-            if (transformation.TowerID == tower.Id)
-                return true;
-        }
-
-        return false;
+    internal static bool Contains(Tower tower)
+    {
+        return ActiveTransformations.Any(transformation => transformation.TowerID == tower.Id);
     }
 
     internal struct Transformation {
         internal AddedTiers AddedTiers { get; set; }
         internal ObjectId TowerID { get; set; }
 
-        internal Transformation(AddedTiers addedTiers, ObjectId towerid) {
+        internal Transformation(AddedTiers addedTiers, ObjectId towerId) {
             AddedTiers = addedTiers;
-            TowerID = towerid;
+            TowerID = towerId;
         }
     }
 }

@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using AdditionalTiers.Utils.Extensions;
-using AdditionalTiers.Utils.Towers;
-
-using Il2CppAssets.Scripts.Models.Towers.Behaviors.Abilities.Behaviors;
-using Il2CppAssets.Scripts.Models.Towers.Projectiles.Behaviors;
+﻿using AdditionalTiers.Utils.Towers;
 
 namespace AdditionalTiers.Towers.Round8.Military.SniperMonkey;
 internal class FrenziedCommando : AddedTiers {
@@ -18,64 +8,59 @@ internal class FrenziedCommando : AddedTiers {
     internal override int Path => 2;
 
     internal override (double progress, bool shouldForm) GetStatus(Tower tower) {
-        var perc = tower.damageDealt / 100_000.0;
+        var percentage = tower.damageDealt / 100_000.0;
 
-        return (perc, perc > 1);
+        return (percentage, percentage > 1);
     }
 
     internal override void GenerateTowerModels(TowerModel baseTower, GameModel gameModel) {
-        var tower = baseTower;
-
-        tower.name = $"{Name} T6";
-        tower.SetDisplay("Round8_FrenziedCommando#1");
-        tower.SetIcons("Round8_FC_Portrait");
-        tower.dontDisplayUpgrades = true;
+        baseTower.name = $"{Name} T6";
+        baseTower.SetDisplay("Round8_FrenziedCommando#1");
+        baseTower.SetIcons("Round8_FC_Portrait");
+        baseTower.dontDisplayUpgrades = true;
 
         float damageStat = 10;
 
-        foreach (var behavior in tower.behaviors) {
-            if (behavior.Is<AttackModel>(out var am)) {
-                am.weapons[0].Rate = 0.05f;
-                am.weapons[0].ejectY = 35.4f;
+        foreach (var behavior in baseTower.behaviors) {
+            if (!behavior.Is<AttackModel>(out var am)) continue;
+            am.weapons[0].Rate = 0.05f;
+            am.weapons[0].ejectY = 35.4f;
 
-                foreach (var projBehavior in am.weapons[0].projectile.behaviors) {
-                    if (projBehavior.Is<DamageModel>(out var dm)) {
-                        dm.damage = damageStat;
-                        dm.immuneBloonProperties = dm.immuneBloonPropertiesOriginal = BloonProperties.None;
-                    }
-                }
+            foreach (var projBehavior in am.weapons[0].projectile.behaviors) {
+                if (!projBehavior.Is<DamageModel>(out var dm)) continue;
+                dm.damage = damageStat;
+                dm.immuneBloonProperties = dm.immuneBloonPropertiesOriginal = BloonProperties.None;
             }
         }
 
-        tower.behaviors = tower.behaviors.Add(new OverrideCamoDetectionModel("OCDM_", true));
+        baseTower.behaviors = baseTower.behaviors.Add(new OverrideCamoDetectionModel("OverrideCamouflageDetectionModel_", true));
 
-        var T1 = tower.CloneCast();
+        var T1 = baseTower.CloneCast();
         T1.name = $"{Name} T7";
 
         damageStat = 25;
 
-        AbilityModel abilityModel = gameModel.GetTower("DartlingGunner", 0, 4, 0).behaviors.First(a => a.Is<AbilityModel>()).CloneCast<AbilityModel>();
+        var abilityModel = gameModel.GetTower("DartlingGunner", 0, 4, 0).behaviors.First(a => a.Is<AbilityModel>()).CloneCast<AbilityModel>();
         abilityModel.name = abilityModel.displayName = abilityModel._name = "FC_Adrenaline";
-        abilityModel.icon = new() { guidRef = "Ui[Round8_FC_AA]" };
+        abilityModel.icon = new SpriteReference { guidRef = "Ui[Round8_FC_AA]" };
         abilityModel.behaviors = abilityModel.behaviors.Remove(a => a.Is<ActivateAttackModel>()).Add(
             new ActivateRateSupportZoneModel("ActivateRateSupportZoneModel_", "Rate:Support", true, .01f, 1, 1, true, 20, new("DM_", new() { guidRef = "" }, 0), "", "", Array.Empty<TowerFilterModel>(), false),
             new ActivateDamageModifierSupportZoneModel("ActivateDamageModifierSupportZoneModel_", "Damage:Support", true, 1, 1, true, 20,
                 new DamageModifierForTagModel("DamageModifierForTagModel_", "Moabs", 100, 1, false, true), Array.Empty<TowerFilterModel>())
             );
-        foreach (var abeh in abilityModel.behaviors)
-            if (abeh.Is<CreateSoundOnAbilityModel>(out var csoam))
-                csoam.sound = null;
+        foreach (var abilityBehavior in abilityModel.behaviors)
+            if (abilityBehavior.Is<CreateSoundOnAbilityModel>(out var createSoundOnAbilityModel))
+                createSoundOnAbilityModel.sound = null;
         abilityModel.cooldown = 50;
         abilityModel.livesCost = 10;
 
         foreach (var behavior in T1.behaviors) {
-            if (behavior.Is<AttackModel>(out var am)) {
-                am.weapons[0].Rate = 0.04f;
+            if (!behavior.Is<AttackModel>(out var am)) continue;
+            am.weapons[0].Rate = 0.04f;
 
-                foreach (var projBehavior in am.weapons[0].projectile.behaviors) {
-                    if (projBehavior.Is<DamageModel>(out var dm)) {
-                        dm.damage = damageStat;
-                    }
+            foreach (var projBehavior in am.weapons[0].projectile.behaviors) {
+                if (projBehavior.Is<DamageModel>(out var dm)) {
+                    dm.damage = damageStat;
                 }
             }
         }
@@ -88,24 +73,25 @@ internal class FrenziedCommando : AddedTiers {
         damageStat = 100;
 
         foreach (var behavior in T2.behaviors) {
-            if (behavior.Is<AttackModel>(out var am)) {
-                am.weapons[0].Rate = 0.03f;
+            if (!behavior.Is<AttackModel>(out var am)) continue;
+            am.weapons[0].Rate = 0.03f;
 
-                foreach (var projBehavior in am.weapons[0].projectile.behaviors) {
-                    if (projBehavior.Is<DamageModel>(out var dm)) {
-                        dm.damage = damageStat;
-                    }
+            foreach (var projBehavior in am.weapons[0].projectile.behaviors) {
+                if (projBehavior.Is<DamageModel>(out var dm)) {
+                    dm.damage = damageStat;
                 }
             }
         }
 
         var bs = gameModel.GetTower("BombShooter").CloneCast();
-        var cpocm = bs.behaviors.First(a => a.Is<AttackModel>()).Cast<AttackModel>().weapons[0].projectile.behaviors.First(a => a.Is<CreateProjectileOnContactModel>()).Cast<CreateProjectileOnContactModel>();
-        cpocm.projectile.pierce = 1000;
-        cpocm.projectile.radius = 10;
-        cpocm.projectile.SetDisplay("Round8_S_Explosion#1");
-        foreach (var cbeh in cpocm.projectile.behaviors) {
-            if (cbeh.Is<DamageModel>(out var cdm)) {
+        var createProjectileOnContactModel = bs.behaviors.First(a => a.Is<AttackModel>()).Cast<AttackModel>().weapons[0]
+            .projectile.behaviors.First(a => a.Is<CreateProjectileOnContactModel>())
+            .Cast<CreateProjectileOnContactModel>();
+        createProjectileOnContactModel.projectile.pierce = 1000;
+        createProjectileOnContactModel.projectile.radius = 10;
+        createProjectileOnContactModel.projectile.SetDisplay("Round8_S_Explosion#1");
+        foreach (var createdProjectileBehavior in createProjectileOnContactModel.projectile.behaviors) {
+            if (createdProjectileBehavior.Is<DamageModel>(out var cdm)) {
                 cdm.damage = 50;
             }
         }
@@ -116,17 +102,16 @@ internal class FrenziedCommando : AddedTiers {
         damageStat = 100;
 
         foreach (var behavior in T3.behaviors) {
-            if (behavior.Is<AttackModel>(out var am)) {
-                am.weapons[0].Rate = 0.02f;
+            if (!behavior.Is<AttackModel>(out var am)) continue;
+            am.weapons[0].Rate = 0.02f;
 
-                foreach (var projBehavior in am.weapons[0].projectile.behaviors) {
-                    if (projBehavior.Is<DamageModel>(out var dm)) {
-                        dm.damage = damageStat;
-                    }
+            foreach (var projBehavior in am.weapons[0].projectile.behaviors) {
+                if (projBehavior.Is<DamageModel>(out var dm)) {
+                    dm.damage = damageStat;
                 }
-
-                am.weapons[0].projectile.behaviors = am.weapons[0].projectile.behaviors.Add(cpocm);
             }
+
+            am.weapons[0].projectile.behaviors = am.weapons[0].projectile.behaviors.Add(createProjectileOnContactModel);
         }
 
         var T4 = T3.CloneCast();
@@ -135,19 +120,18 @@ internal class FrenziedCommando : AddedTiers {
         damageStat = 300;
 
         foreach (var behavior in T4.behaviors) {
-            if (behavior.Is<AttackModel>(out var am)) {
-                am.weapons[0].Rate = 0.01f;
+            if (!behavior.Is<AttackModel>(out var am)) continue;
+            am.weapons[0].Rate = 0.01f;
 
-                foreach (var projBehavior in am.weapons[0].projectile.behaviors) {
-                    if (projBehavior.Is<DamageModel>(out var dm)) {
-                        dm.damage = damageStat;
-                    }
-                    if (projBehavior.Is<CreateProjectileOnContactModel>(out var create)) {
-                        foreach (var cbeh in create.projectile.behaviors) {
-                            if (cbeh.Is<DamageModel>(out var cdm)) {
-                                cdm.damage = damageStat;
-                            }
-                        }
+            foreach (var projBehavior in am.weapons[0].projectile.behaviors) {
+                if (projBehavior.Is<DamageModel>(out var dm)) {
+                    dm.damage = damageStat;
+                }
+
+                if (!projBehavior.Is<CreateProjectileOnContactModel>(out var create)) continue;
+                foreach (var createdProjectileBehavior in create.projectile.behaviors) {
+                    if (createdProjectileBehavior.Is<DamageModel>(out var cdm)) {
+                        cdm.damage = damageStat;
                     }
                 }
             }
@@ -168,17 +152,16 @@ internal class FrenziedCommando : AddedTiers {
         damageStat = 500;
 
         foreach (var behavior in T6.behaviors) {
-            if (behavior.Is<AttackModel>(out var am)) {
-                foreach (var projBehavior in am.weapons[0].projectile.behaviors) {
-                    if (projBehavior.Is<DamageModel>(out var dm)) {
-                        dm.damage = damageStat;
-                    }
-                    if (projBehavior.Is<CreateProjectileOnContactModel>(out var create)) {
-                        foreach (var cbeh in create.projectile.behaviors) {
-                            if (cbeh.Is<DamageModel>(out var cdm)) {
-                                cdm.damage = damageStat;
-                            }
-                        }
+            if (!behavior.Is<AttackModel>(out var am)) continue;
+            foreach (var projBehavior in am.weapons[0].projectile.behaviors) {
+                if (projBehavior.Is<DamageModel>(out var dm)) {
+                    dm.damage = damageStat;
+                }
+
+                if (!projBehavior.Is<CreateProjectileOnContactModel>(out var create)) continue;
+                foreach (var createdProjectileBehavior in create.projectile.behaviors) {
+                    if (createdProjectileBehavior.Is<DamageModel>(out var cdm)) {
+                        cdm.damage = damageStat;
                     }
                 }
             }
@@ -190,29 +173,28 @@ internal class FrenziedCommando : AddedTiers {
         damageStat = 1000;
 
         foreach (var behavior in T7.behaviors) {
-            if (behavior.Is<AttackModel>(out var am)) {
-                foreach (var projBehavior in am.weapons[0].projectile.behaviors) {
-                    if (projBehavior.Is<DamageModel>(out var dm)) {
-                        dm.damage = damageStat;
-                    }
-                    if (projBehavior.Is<CreateProjectileOnContactModel>(out var create)) {
-                        foreach (var cbeh in create.projectile.behaviors) {
-                            if (cbeh.Is<DamageModel>(out var cdm)) {
-                                cdm.damage = damageStat;
-                            }
-                        }
+            if (!behavior.Is<AttackModel>(out var am)) continue;
+            foreach (var projBehavior in am.weapons[0].projectile.behaviors) {
+                if (projBehavior.Is<DamageModel>(out var dm)) {
+                    dm.damage = damageStat;
+                }
+
+                if (!projBehavior.Is<CreateProjectileOnContactModel>(out var create)) continue;
+                foreach (var createdProjectileBehavior in create.projectile.behaviors) {
+                    if (createdProjectileBehavior.Is<DamageModel>(out var cdm)) {
+                        cdm.damage = damageStat;
                     }
                 }
             }
         }
         
 
-        AbilityModel abilityModel2 = gameModel.GetTower("IceMonkey", 0, 5, 0).behaviors.First(a => a.Is<AbilityModel>()).CloneCast<AbilityModel>();
+        var abilityModel2 = gameModel.GetTower("IceMonkey", 0, 5, 0).behaviors.First(a => a.Is<AbilityModel>()).CloneCast<AbilityModel>();
         abilityModel2.name = abilityModel2.displayName = abilityModel2._name = "FC_TimeStop";
-        abilityModel2.icon = new() { guidRef = "Ui[Round8_FC_AA2]" };
+        abilityModel2.icon = new SpriteReference { guidRef = "Ui[Round8_FC_AA2]" };
 
-        foreach (var abeh in abilityModel2.behaviors) {
-            if (abeh.Is<ActivateAttackModel>(out var aam)) {
+        foreach (var abilityBehavior in abilityModel2.behaviors) {
+            if (abilityBehavior.Is<ActivateAttackModel>(out var aam)) {
                 aam.Lifespan = 2.5f;
                 foreach (var apb in aam.attacks[0].weapons[0].projectile.behaviors) {
                     if (apb.Is<FreezeModel>(out var FM)) {
@@ -221,11 +203,13 @@ internal class FrenziedCommando : AddedTiers {
                 }
             }
 
-            if (abeh.Is<CreateSoundOnAbilityModel>(out var csoam))
-                csoam.sound = null;
+            if (abilityBehavior.Is<CreateSoundOnAbilityModel>(out var createdSoundOnAbilityModel))
+                createdSoundOnAbilityModel.sound = null;
         }
         abilityModel2.behaviors = abilityModel2.behaviors.Remove(a=>a.Is<CreateEffectOnAbilityModel>())
-            .Add(new ActivateRateSupportZoneModel("ActivateRateSupportZoneModel_", "Rate:Support", true, .001f, 1, 1, true, 35, new("DM_", new() { guidRef = "" }, 0), "", "", Array.Empty<TowerFilterModel>(), false));
+            .Add(new ActivateRateSupportZoneModel("ActivateRateSupportZoneModel_", "Rate:Support", true, .001f, 1, 1,
+                true, 35, new DisplayModel("DM_", new PrefabReference { guidRef = "" }, 0), "", "",
+                Array.Empty<TowerFilterModel>(), false));
         abilityModel2.activateOnPreLeak = true;
 
         var T8 = T7.CloneCast();
@@ -234,18 +218,17 @@ internal class FrenziedCommando : AddedTiers {
         damageStat = 10000;
 
         foreach (var behavior in T8.behaviors) {
-            if (behavior.Is<AttackModel>(out var am)) {
-                am.weapons[0].Rate = 0.005f;
-                foreach (var projBehavior in am.weapons[0].projectile.behaviors) {
-                    if (projBehavior.Is<DamageModel>(out var dm)) {
-                        dm.damage = damageStat;
-                    }
-                    if (projBehavior.Is<CreateProjectileOnContactModel>(out var create)) {
-                        foreach (var cbeh in create.projectile.behaviors) {
-                            if (cbeh.Is<DamageModel>(out var cdm)) {
-                                cdm.damage = damageStat;
-                            }
-                        }
+            if (!behavior.Is<AttackModel>(out var am)) continue;
+            am.weapons[0].Rate = 0.005f;
+            foreach (var projBehavior in am.weapons[0].projectile.behaviors) {
+                if (projBehavior.Is<DamageModel>(out var dm)) {
+                    dm.damage = damageStat;
+                }
+
+                if (!projBehavior.Is<CreateProjectileOnContactModel>(out var create)) continue;
+                foreach (var createdProjectileBehavior in create.projectile.behaviors) {
+                    if (createdProjectileBehavior.Is<DamageModel>(out var cdm)) {
+                        cdm.damage = damageStat;
                     }
                 }
             }
@@ -253,7 +236,7 @@ internal class FrenziedCommando : AddedTiers {
 
         T8.behaviors = T8.behaviors.Add(abilityModel2);
 
-        TowerRegister.Register(currentUpgrade: 0, towerModel: tower, towerType: "Bullets", upgradeCost: 30_000, portrait: "Round8_FC_Portrait", currentSPA: 0.05, currentDamage: 10,
+        TowerRegister.Register(currentUpgrade: 0, towerModel: baseTower, towerType: "Bullets", upgradeCost: 30_000, portrait: "Round8_FC_Portrait", currentSPA: 0.05, currentDamage: 10,
             nextSPA: -0.01, nextDamage: 15, nextRange: 0, extra: "Adrenaline", maxUpgrade: false, nextUpgradeName: $"{Name} T7");
 
         TowerRegister.Register(currentUpgrade: 1, towerModel: T1, towerType: "Bullets", upgradeCost: 45_000, portrait: "Round8_FC_Portrait", currentSPA: 0.04, currentDamage: 25,
@@ -282,9 +265,8 @@ internal class FrenziedCommando : AddedTiers {
     }
 
     internal override void Animation(Attack attack, Tower tower) {
-        if (tower.towerModel.name.StartsWith(Name)) {
-            tower.Node.graphic.GetComponent<Animator>().StopPlayback();
-            tower.Node.graphic.GetComponent<Animator>().Play("Attack");
-        }
+        if (!tower.towerModel.name.StartsWith(Name)) return;
+        tower.Node.graphic.GetComponent<Animator>().StopPlayback();
+        tower.Node.graphic.GetComponent<Animator>().Play("Attack");
     }
 }
