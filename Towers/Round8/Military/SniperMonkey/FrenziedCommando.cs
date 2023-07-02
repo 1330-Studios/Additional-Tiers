@@ -44,7 +44,7 @@ internal class FrenziedCommando : AddedTiers {
         abilityModel.name = abilityModel.displayName = abilityModel._name = "FC_Adrenaline";
         abilityModel.icon = new SpriteReference { guidRef = "Ui[Round8_FC_AA]" };
         abilityModel.behaviors = abilityModel.behaviors.Remove(a => a.Is<ActivateAttackModel>()).Add(
-            new ActivateRateSupportZoneModel("ActivateRateSupportZoneModel_", "Rate:Support", true, .01f, 1, 1, true, 20, new("DM_", new() { guidRef = "" }, 0), "", "", Array.Empty<TowerFilterModel>(), false),
+            new ActivateRateSupportZoneModel("ActivateRateSupportZoneModel_", "Rate:Support", true, .01f, 1, 1, true, 20, new("DM_", new() { guidRef = "" }, 0, DisplayCategory.None), "", "", Array.Empty<TowerFilterModel>(), false),
             new ActivateDamageModifierSupportZoneModel("ActivateDamageModifierSupportZoneModel_", "Damage:Support", true, 1, 1, true, 20,
                 new DamageModifierForTagModel("DamageModifierForTagModel_", "Moabs", 100, 1, false, true), Array.Empty<TowerFilterModel>())
             );
@@ -208,7 +208,7 @@ internal class FrenziedCommando : AddedTiers {
         }
         abilityModel2.behaviors = abilityModel2.behaviors.Remove(a=>a.Is<CreateEffectOnAbilityModel>())
             .Add(new ActivateRateSupportZoneModel("ActivateRateSupportZoneModel_", "Rate:Support", true, .001f, 1, 1,
-                true, 35, new DisplayModel("DM_", new PrefabReference { guidRef = "" }, 0), "", "",
+                true, 35, new DisplayModel("DM_", new PrefabReference { guidRef = "" }, 0, DisplayCategory.None), "", "",
                 Array.Empty<TowerFilterModel>(), false));
         abilityModel2.activateOnPreLeak = true;
 

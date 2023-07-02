@@ -48,7 +48,7 @@ internal sealed class AssetPatches {
 
             if (!guid.Equals("UpgradedText")) return true;
             var transform = Game.instance.prototypeObjects.transform;
-            factory.FindAndSetupPrototypeAsync(new PrefabReference { guidRef = "3dcdbc19136c60846ab944ada06695c0" }, new Action<UnityDisplayNode>(node => {
+            factory.FindAndSetupPrototypeAsync(new PrefabReference { guidRef = "3dcdbc19136c60846ab944ada06695c0" }, DisplayCategory.Effect, new Action<UnityDisplayNode>(node => {
                 var gameObject = Object.Instantiate(node.gameObject, transform);
                 gameObject.name = guid + " (Clone)";
 

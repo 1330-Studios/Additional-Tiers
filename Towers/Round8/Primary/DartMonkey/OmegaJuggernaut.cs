@@ -41,7 +41,7 @@ internal class OmegaJuggernaut : AddedTiers {
                 if (!projBehavior.Is<CreateProjectileOnExhaustFractionModel>(
                         out var createProjectileOnExhaustFractionModel)) continue;
                 createProjectileOnExhaustFractionModel.projectile = originalProj;
-                createProjectileOnExhaustFractionModel.emission = new ArcEmissionModel("AEM__", 2, 0, 360, null, false);
+                createProjectileOnExhaustFractionModel.emission = new ArcEmissionModel("AEM__", 2, 0, 360, null, false, false);
             }
         }
 
@@ -55,7 +55,7 @@ internal class OmegaJuggernaut : AddedTiers {
         foreach (var behavior in T1.behaviors) {
             if (!behavior.Is<AttackModel>(out var am)) continue;
             am.weapons[0].Rate = 0.65f;
-            am.weapons[0].emission = new ArcEmissionModel("AEM_", 3, 0, 45, null, false);
+            am.weapons[0].emission = new ArcEmissionModel("AEM_", 3, 0, 45, null, false, false);
 
             foreach (var projBehavior in am.weapons[0].projectile.behaviors) {
                 if (projBehavior.Is<DamageModel>(out var dm)) {
@@ -73,7 +73,7 @@ internal class OmegaJuggernaut : AddedTiers {
         foreach (var behavior in T2.behaviors) {
             if (!behavior.Is<AttackModel>(out var am)) continue;
             am.weapons[0].Rate = 0.4f;
-            am.weapons[0].emission = new ArcEmissionModel("AEM_", 3, 0, 45, null, false);
+            am.weapons[0].emission = new ArcEmissionModel("AEM_", 3, 0, 45, null, false, false);
             var originalProj = am.weapons[0].projectile.CloneCast();
             am.weapons[0].projectile.SetDisplay("Round8_OJ_Proj7#1.5");
 
@@ -85,7 +85,7 @@ internal class OmegaJuggernaut : AddedTiers {
                 if (!projBehavior.Is<CreateProjectileOnExhaustFractionModel>(
                         out var createProjectileOnExhaustFractionModel)) continue;
                 createProjectileOnExhaustFractionModel.projectile = originalProj;
-                createProjectileOnExhaustFractionModel.emission = new ArcEmissionModel("AEM_", 2, 0, 360, null, false);
+                createProjectileOnExhaustFractionModel.emission = new ArcEmissionModel("AEM_", 2, 0, 360, null, false, false);
             }
         }
 
@@ -97,7 +97,7 @@ internal class OmegaJuggernaut : AddedTiers {
         foreach (var behavior in T3.behaviors) {
             if (!behavior.Is<AttackModel>(out var am)) continue;
             am.weapons[0].Rate = 0.33f;
-            am.weapons[0].emission = new ArcEmissionModel("AEM_", 4, 0, 55, null, false);
+            am.weapons[0].emission = new ArcEmissionModel("AEM_", 4, 0, 55, null, false, false);
 
             foreach (var projBehavior in am.weapons[0].projectile.behaviors) {
                 if (projBehavior.Is<DamageModel>(out var dm)) {
@@ -143,7 +143,7 @@ internal class OmegaJuggernaut : AddedTiers {
 
                 if (!projBehavior.Is<CreateProjectileOnExhaustFractionModel>(out var createProjectileOnExhaustFractionModel)) continue;
                 createProjectileOnExhaustFractionModel.projectile = originalProj;
-                createProjectileOnExhaustFractionModel.emission = new ArcEmissionModel("AEM_", 2, 90, 360, null, false);
+                createProjectileOnExhaustFractionModel.emission = new ArcEmissionModel("AEM_", 2, 90, 360, null, false, false);
             }
         }
 

@@ -94,7 +94,6 @@ global using Il2CppAssets.Scripts.Models.Towers.Weapons.Behaviors;
 global using Il2CppAssets.Scripts.Models.TowerSelectionMenuTheme;
 global using Il2CppAssets.Scripts.Models.TowerSets;
 global using Il2CppAssets.Scripts.Models.TowerSets.Mods;
-global using Il2CppAssets.Scripts.Models.Types;
 global using Il2CppAssets.Scripts.Simulation;
 global using Il2CppAssets.Scripts.Simulation.Action;
 global using Il2CppAssets.Scripts.Simulation.Audio;

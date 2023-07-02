@@ -53,7 +53,7 @@ internal class GlaiveCreator : AddedTiers {
 
                     am.weapons[0].projectile.behaviors = am.weapons[0].projectile.behaviors.Add(
                         new Il2CppAssets.Scripts.Models.Towers.Projectiles.Behaviors.CreateEffectOnExpireModel("CreateEffectOnExpireModel_", new PrefabReference { guidRef = "6d84b13b7622d2744b8e8369565bc058" },
-                            1, false, true, new EffectModel("Effect", new PrefabReference { guidRef = "6d84b13b7622d2744b8e8369565bc058" }, 1, 1)));
+                            1, Fullscreen.No, true, new EffectModel("Effect", new PrefabReference { guidRef = "6d84b13b7622d2744b8e8369565bc058" }, 1, 1)));
                 }
             } else if (t.Is<OrbitModel>(out var om)) {
                 om.range += 5;
@@ -172,7 +172,7 @@ internal class GlaiveCreator : AddedTiers {
                 }
 
                 if (am.name.Contains("AttackModel_Attack_") || am.name.Contains("AttackModel_AttackFlames_")) {
-                    am.weapons[0].emission = new ArcEmissionModel("AEM_", 3, 0, 30, null, false);
+                    am.weapons[0].emission = new ArcEmissionModel("AEM_", 3, 0, 30, null, false, false);
                     am.weapons[0].Rate -= 0.2f;
 
                     foreach (var projectileBehavior in am.weapons[0].projectile.behaviors) {
@@ -224,7 +224,7 @@ internal class GlaiveCreator : AddedTiers {
                 }
 
                 if (am.name.Contains("AttackModel_Attack_") || am.name.Contains("AttackModel_AttackFlames_")) {
-                    am.weapons[0].emission = new ArcEmissionModel("AEM_", 10, 0, 100, null, false);
+                    am.weapons[0].emission = new ArcEmissionModel("AEM_", 10, 0, 100, null, false, false);
 
                     if (am.name.Contains("AttackModel_Attack_")) {
                         am.weapons[0].projectile.behaviors = am.weapons[0].projectile.behaviors.Add(new DamageModifierForTagModel("DamageModifierForTagModel_", "Moabs", 5, 10, false, true));
