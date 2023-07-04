@@ -4,7 +4,7 @@ using AdditionalTiers.Towers;
 [assembly: MelonAuthorColor(255, 200, 200, 255)]
 [assembly: MelonColor(255, 255, 75, 255)]
 [assembly: MelonGame("Ninja Kiwi", "BloonsTD6")]
-[assembly: MelonInfo(typeof(AdditionalTiers_MelonMain), "Additional Tier Add-on", "2.0", "1330 Studios LLC")]
+[assembly: MelonInfo(typeof(AdditionalTiers_MelonMain), "Additional Tier Add-on", "37.3", "1330 Studios LLC")]
 
 namespace AdditionalTiers;
 public sealed class AdditionalTiers_MelonMain : MelonMod {
