@@ -1,7 +1,6 @@
 ﻿namespace AdditionalTiers.ContentLoaders;
 internal abstract class Loader {
     internal virtual void Load(MelonAssembly melonAssembly) {
-        throw new NotImplementedException();
     }
 }
 

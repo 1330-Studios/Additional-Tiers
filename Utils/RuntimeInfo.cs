@@ -10,10 +10,6 @@ internal static class RuntimeInfo {
 
     internal static MelonLogger.Instance Logger;
 
-    public static int LastWin32Error => Marshal.GetLastWin32Error();
-    public static int LastSystemError => Marshal.GetLastSystemError();
-    public static int LastPInvokeError => Marshal.GetLastPInvokeError();
-
     internal static void Initialize(MelonAssembly melonAssembly, MelonLogger.Instance instance) {
         var version = melonAssembly.Assembly.GetName().Version;
         if (version != null) ModVersion = version.ToString();
